@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>i love you my peppa pig 🐽</title>
+
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+/* ===== VIDEO BACKGROUND ===== */
+.video-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+.video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 5, 5, 0.6);
+  z-index: -1;
+}
+
+/* ===== PAGE ===== */
+body {
+  min-height: 100vh;
+  color: #f5e6b8;
+}
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+h1 {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
+.subtitle {
+  margin-bottom: 30px;
+}
+
+/* ===== GRID ===== */
+.grid {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: linear-gradient(145deg, #3a0f0f, #7a1f1f);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  border: 1px solid rgba(212,175,55,.45);
+  box-shadow: 0 0 18px rgba(212,175,55,.35);
+  transition: transform .2s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+/* ===== BUTTON CENTER FIX (REAL) ===== */
+.button-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+button {
+  min-width: 160px;
+  padding: 12px 24px;
+  border-radius: 22px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  background: linear-gradient(145deg, #d4af37, #b8962e);
+  color: #2b0f0f;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 0 15px rgba(212,175,55,.7);
+}
+button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== MODAL ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.modal.active {
+  display: flex;
+}
+.modal-content {
+  background: #1b0b0b;
+  padding: 24px;
+  border-radius: 22px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid rgba(212,175,55,.55);
+  text-align: center;
+}
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  margin: 14px 0;
+}
+iframe {
+  width: 100%;
+  height: 280px;
+  border: none;
+  border-radius: 16px;
+}
+.error {
+  color: #ff8080;
+  margin-top: 10px;
+}
+
+/* ===== INTRO ===== */
+.intro {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.intro-box {
+  background: #1b0b0b;
+  padding: 30px;
+  border-radius: 24px;
+  max-width: 420px;
+  text-align: center;
+  border: 1px solid rgba(212,175,55,.55);
+  box-shadow: 0 0 30px rgba(212,175,55,.45);
+}
+.intro-box p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+  .page {
+    justify-content: flex-start;
+    padding-top: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<div class="video-bg">
+  <video autoplay muted loop playsinline>
+    <source src="harrybg.mov" type="video/mp4">
+  </video>
+</div>
+<div class="video-overlay"></div>
+
+<!-- AUDIO -->
+<audio id="bgm" loop>
+  <source src="harry-music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- INTRO POPUP -->
+<div class="intro" id="intro">
+  <div class="intro-box">
+    <p>มานับวันรอเจอกันไปด้วยกันนะคะคนเก่ง :-)</p>
+    <div class="button-wrap">
+      <button onclick="closeIntro()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <h1>i love you my peppa pig 🐽</h1>
+  <div class="subtitle">เปิดตามวัน ห้ามแอบดูนะไออ้วน!</div>
+  <div class="grid" id="cardGrid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+const bgm = document.getElementById("bgm");
+
+const videos = [
+  { title:"30 เย็น", password:"hippost", video:"https://drive.google.com/file/d/1f5ED4SUCnjLCQHVrPBejiaUx3DNt6mrW/preview" },
+  { title:"31 เช้า", password:"gummyauan", video:"https://drive.google.com/file/d/19rAbWk2d0tWTyCQbTwdIEnNujG4tfXQQ/preview" },
+  { title:"31 เย็น", password:"chachoalnarak", video:"https://drive.google.com/file/d/1kj-ojvmpafILJTd6kYwpOG0AWpCwCf4_/preview" },
+  { title:"1 เช้า", password:"hny26", video:"https://drive.google.com/file/d/1652A7gjnmdXWrBGyGZ-0I2MT0Wku-k_J/preview" },
+  { title:"1 เย็น", password:"stbby", video:"https://drive.google.com/file/d/1JzSmxYQ0e1ogFi616AhNaMxLLWFI0e30/preview" },
+  { title:"2 เช้า", password:"mysm", video:"https://drive.google.com/file/d/1BCPHsg4wPjjq5sZ8JZ_Xp_m1mYKP_f9g/preview" },
+  { title:"2 เย็น", password:"lysb", video:"https://drive.google.com/file/d/1W7_wnWFL52TIvF6rhV2QXNR8ql8Ui3Zk/preview" },
+  { title:"3 เช้า", password:"kidtueng", video:"https://drive.google.com/file/d/1llR4xcxIQzQCLEDX1RpmwZA0i-K4iA32/preview" },
+  { title:"3 เย็น", password:"cantwait", video:"https://drive.google.com/file/d/1rdOd9yl7MYrd4Vj8Szrk2aVIVYIZDghk/preview" },
+  { title:"4 เช้า", password:"djaiteemebby", video:"https://drive.google.com/file/d/1V6CyGwsrfK-M9FikpiglM569JblPpej0/preview" }
+];
+
+const grid = document.getElementById("cardGrid");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
+videos.forEach((v, i) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="icon">🎁</div><h3>${v.title}</h3>`;
+  card.onclick = () => openModal(i);
+  grid.appendChild(card);
+});
+
+function openModal(i) {
+  modal.classList.add("active");
+  modalContent.innerHTML = `
+    <h3>ใส่รหัสผ่านของหมาแดง</h3>
+    <input id="passwordInput" type="password" placeholder="รหัสผ่าน">
+    <div class="button-wrap">
+      <button onclick="checkPassword(${i})">กดเพื่อดู 🎁</button>
+    </div>
+    <div class="error" id="errorMsg"></div>
+  `;
+}
+
+function checkPassword(i) {
+  const val = document.getElementById("passwordInput").value;
+  if (val === videos[i].password) {
+    bgm.pause(); // 🔇 หยุดเพลงก่อนเปิดวิดีโอ
+    modalContent.innerHTML = `
+      <iframe src="${videos[i].video}" allow="autoplay"></iframe>
+    `;
+  } else {
+    document.getElementById("errorMsg").innerText = "รหัสผิดนะไออ้วน!";
+  }
+}
+
+modal.onclick = e => {
+  if (e.target === modal) modal.classList.remove("active");
+};
+
+function closeIntro() {
+  document.getElementById("intro").style.display = "none";
+  bgm.volume = 0.4;
+  bgm.play();
+}
+</script>
+
+</body>
+</html>
